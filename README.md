@@ -4,6 +4,7 @@
 ## 🚀Enquetes
 
 Desenvolvimento de um sistema de enquetes aplicável para votações viabilizando cadastro de perguntas e alternativas.
+Aplicação criada para visualizar questões interativas.
 
 ## 📋 Acervo 
 
