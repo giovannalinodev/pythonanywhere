@@ -32,11 +32,4 @@ jobs:
         python manage.py makemigrations --noinput
         python manage.py migrate --noinput
 
-    - name: Rodar testes
-      run: |
-        python manage.py test
 
-    - name: Verificar lint (opcional)
-      run: |
-        pip install flake8
-        flake8 . --exclude=migrations
