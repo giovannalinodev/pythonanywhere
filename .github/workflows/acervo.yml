@@ -1,0 +1,44 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v3
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Instalar dependências
+      run: |
+        python -m pip install --upgrade pip
+        # Check if requirements.txt exists in root directory
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        else
+          # Check if requirements.txt is in mysite directory
+          if [ -f mysite/requirements.txt ]; then
+            pip install -r mysite/requirements.txt
+          else
+            # Install Django and Pillow explicitly if no requirements file is found
+            pip install django pillow
+          fi
+        fi
+
+    - name: Rodar migrações
+      run: |
+        cd mysite
+        python manage.py makemigrations --noinput
+        python manage.py migrate --noinput
