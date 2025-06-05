@@ -11,11 +11,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
-      - name: Instalar dependências do sistema
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+      
+      - name: Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
       
       - name: Instalar dependências Python
         run: |
@@ -31,8 +32,10 @@ jobs:
           out: 'reports'
           args: >
             --enableExperimental
-            --scan **/*.py
             --scan requirements.txt
+            --scan "**/*.py"
+            --excludeTest
+            --failOnCVSS 7
           
       - name: Verificar relatório gerado
         run: |
@@ -42,4 +45,15 @@ jobs:
       - name: Mostrar resumo do relatório
         run: |
           echo "Resumo do relatório de vulnerabilidades:"
-          grep -A 5 "Vulnerabilities Found" reports/dependency-check-report.html || echo "Nenhuma vulnerabilidade encontrada ou padrão não encontrado"
+          if [ -f "reports/dependency-check-report.html" ]; then
+            grep -A 5 "Vulnerabilities Found" reports/dependency-check-report.html || echo "Nenhuma vulnerabilidade encontrada ou padrão não encontrado"
+          else
+            echo "Arquivo de relatório não foi gerado"
+          fi
+          
+      - name: Upload do relatório como artefato
+        uses: actions/upload-artifact@v2
+        with:
+          name: dependency-check-report
+          path: reports/
+          retention-days: 7
