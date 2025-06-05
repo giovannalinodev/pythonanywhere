@@ -28,7 +28,7 @@ jobs:
           dependency-check --scan . --out reports/dependency-check-report.html --format HTML
           
       - name: Enviar Relatório de Verificação de Dependência
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2  # Mudando de v3 para v2
         with:
           name: dependency-check-report
           path: reports/dependency-check-report.html
