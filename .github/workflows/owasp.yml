@@ -9,37 +9,32 @@ jobs:
   dependency-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
       
-      - name: Configurar Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          
-      - name: Instalar dependências
+      - name: Instalar dependências Python
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Download OWASP Dependency Check
-        run: |
-          mkdir -p .dependency-check/
-          curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.4/dependency-check-7.4.4-release.zip -o .dependency-check/dependency-check.zip
-          unzip .dependency-check/dependency-check.zip -d .dependency-check/
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'Python-Django-App'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          args: >
+            --enableExperimental
+            --scan **/*.py
+            --scan requirements.txt
           
-      - name: Executar Dependency Check
+      - name: Verificar relatório gerado
         run: |
-          mkdir -p reports
-          chmod +x .dependency-check/dependency-check/bin/dependency-check.sh
-          .dependency-check/dependency-check/bin/dependency-check.sh --scan . --out reports/dependency-check-report.html --format HTML
-          
-      - name: Enviar Relatório via Comandos do CLI
-        run: |
-          echo "O relatório foi gerado em: reports/dependency-check-report.html"
+          echo "Listando arquivos no diretório reports"
           ls -la reports/
-          head -n 20 reports/dependency-check-report.html || echo "Não foi possível mostrar o cabeçalho do relatório"
-          echo "..."
           
-      - name: Salvar Caminho do Relatório
-        run: echo "Relatório de dependências gerado em $GITHUB_WORKSPACE/reports/dependency-check-report.html"
+      - name: Mostrar resumo do relatório
+        run: |
+          echo "Resumo do relatório de vulnerabilidades:"
+          grep -A 5 "Vulnerabilities Found" reports/dependency-check-report.html || echo "Nenhuma vulnerabilidade encontrada ou padrão não encontrado"
