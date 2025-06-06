@@ -11,10 +11,11 @@ updates:
       - "security"
   
   - package-ecosystem: "pip"
-    directory: "/mysite/acervo/"
+    directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
+    target-branch: "main"
     labels:
       - "dependencies"
-      - "acervo-module"
+      - "security"
