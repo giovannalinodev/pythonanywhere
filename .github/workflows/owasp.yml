@@ -19,17 +19,23 @@ jobs:
         with:
           python-version: '3.x'
       
+      - name: Create clean requirements file
+        run: |
+          # Remover comentários e linhas vazias, manter apenas pacotes válidos
+          grep -v '^//' mysite/acervo/requirements.txt | grep -v '^\s*$' > clean-requirements.txt
+          cat clean-requirements.txt
+      
       - name: Install specific dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r mysite/acervo/requirements.txt
+          python -m pip install -r clean-requirements.txt
           
       # Alternativa 1: Usar Safety em vez do OWASP Dependency Check
       - name: Install safety
         run: pip install safety
 
       - name: Run Safety Check
-        run: safety check -r mysite/acervo/requirements.txt --output text > safety-report.txt
+        run: safety check -r clean-requirements.txt --output text > safety-report.txt
         
       - name: Upload safety report
         uses: actions/upload-artifact@v4
