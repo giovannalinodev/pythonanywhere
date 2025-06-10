@@ -14,17 +14,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       
-      - name: Install dependencies
+      - name: Install specific dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f mysite/acervo/requirements.txt ]; then pip install -r mysite/acervo/requirements.txt; fi
-      
+          python -m pip install -r mysite/acervo/requirements.txt
+          
       - name: OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
