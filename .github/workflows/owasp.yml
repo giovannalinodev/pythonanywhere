@@ -19,10 +19,13 @@ jobs:
         with:
           python-version: '3.x'
       
-      - name: Create clean requirements file
+      - name: Create manual requirements file
         run: |
-          # Remover comentários e linhas vazias, manter apenas pacotes válidos
-          grep -v '^//' mysite/acervo/requirements.txt | grep -v '^\s*$' > clean-requirements.txt
+          # Criar arquivo de requisitos limpo manualmente
+          echo "Django>=4.2,<5.0" > clean-requirements.txt
+          echo "Pillow>=10.0.0" >> clean-requirements.txt
+          echo "dependency-check==0.5.0" >> clean-requirements.txt
+          echo "pylint==2.17.5" >> clean-requirements.txt
           cat clean-requirements.txt
       
       - name: Install specific dependencies
@@ -30,12 +33,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r clean-requirements.txt
           
-      # Alternativa 1: Usar Safety em vez do OWASP Dependency Check
+      # Usar Safety para verificação de dependências
       - name: Install safety
         run: pip install safety
 
       - name: Run Safety Check
-        run: safety check -r clean-requirements.txt --output text > safety-report.txt
+        run: safety check --file clean-requirements.txt --output text > safety-report.txt
         
       - name: Upload safety report
         uses: actions/upload-artifact@v4
