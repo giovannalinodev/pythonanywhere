@@ -46,3 +46,23 @@ jobs:
           name: safety-report
           path: safety-report.txt
           retention-days: 7
+
+      # Verificação de código deprecado
+      - name: Check for deprecated code
+        run: |
+          # Falhar o pipeline se encontrar código deprecado
+          pylint --disable=all --enable=deprecated-method,deprecated-argument,deprecated-class,deprecated-module,bad-builtin mysite/ || exit 1
+          
+      - name: Generate deprecated code report
+        if: always()
+        run: |
+          # Gerar relatório mesmo se falhar
+          pylint --disable=all --enable=deprecated-method,deprecated-argument,deprecated-class,deprecated-module,bad-builtin --output-format=text mysite/ > deprecated-code-report.txt || true
+          
+      - name: Upload deprecated code report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deprecated-code-report
+          path: deprecated-code-report.txt
+          retention-days: 7
