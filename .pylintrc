@@ -1,0 +1,11 @@
+[MASTER]
+ignore=migrations,settings.py
+load-plugins=pylint.extensions.bad_builtin
+
+[MESSAGES CONTROL]
+disable=all
+enable=deprecated-method,deprecated-argument,deprecated-class,deprecated-module,bad-builtin
+
+[REPORTS]
+output-format=text
+reports=yes
