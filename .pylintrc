@@ -1,11 +1,47 @@
 [MASTER]
-ignore=migrations,settings.py
+# Adiciona o diretório atual ao path do Python
+init-hook='import sys; sys.path.append(".")'
+
+# Ignora diretórios e arquivos específicos
+ignore=migrations,settings.py,manage.py,__pycache__
+
+# Carrega plugins úteis
 load-plugins=pylint.extensions.bad_builtin
 
 [MESSAGES CONTROL]
-disable=all
-enable=deprecated-method,deprecated-argument,deprecated-class,deprecated-module,bad-builtin
+# Ao invés de desabilitar tudo, vamos habilitar a maioria e desabilitar apenas o necessário
+disable=missing-module-docstring,
+       missing-class-docstring,
+       missing-function-docstring,
+       no-member,
+       import-error,
+       too-few-public-methods,
+       duplicate-code,
+       line-too-long,
+       raw-checker-failed,
+       bad-inline-option,
+       locally-disabled,
+       file-ignored,
+       suppressed-message,
+       useless-suppression,
+       deprecated-pragma
+
+# Mantém as verificações anteriores habilitadas
+enable=deprecated-method,
+      deprecated-argument,
+      deprecated-class,
+      deprecated-module,
+      bad-builtin
+
+[FORMAT]
+# Comprimento máximo da linha
+max-line-length=120
+
+[BASIC]
+# Nomes curtos aceitáveis
+good-names=i,j,k,ex,Run,_,pk,id,db
 
 [REPORTS]
+# Formato de saída e configuração de relatório
 output-format=text
 reports=yes
