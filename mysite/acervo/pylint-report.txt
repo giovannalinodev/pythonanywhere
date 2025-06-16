@@ -1,0 +1,2 @@
+************* Module mysite/acervo/
+mysite/acervo/:1:0: F0001: No module named mysite/acervo/ (fatal)
