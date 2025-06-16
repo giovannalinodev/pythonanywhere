@@ -1,18 +1,18 @@
+from datetime import date
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+# from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
-from .models import Livro, Contato, Emprestimo, Item
-from django.urls import reverse
-from django.contrib import messages
-from django.views.generic.list import ListView
-from django.views.generic import TemplateView
+# from django.urls import reverse
+# from django.contrib import messages
+# from django.views.generic.list import ListView
+# from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from datetime import date
+from .models import Livro, Contato, Emprestimo, Item
+from django.contrib.auth.models import User
 
 
 ####INDEX

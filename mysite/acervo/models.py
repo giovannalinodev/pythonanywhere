@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import date
-from django.utils import timezone
+# from django.utils import timezone
 from django.contrib.auth.models import User
 
 class Item(models.Model):
@@ -57,5 +57,6 @@ class Emprestimo(models.Model):
     def __str__(self):
         if self.item:
             return f"{self.item.nome}"
-        else:
-            return f"{self.livro.titulo}"
+        # else:
+        #     return f"{self.livro.titulo}"
+
