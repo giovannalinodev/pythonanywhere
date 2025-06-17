@@ -1,12 +1,14 @@
 name: OWASP Dependency Check
 
 on:
+  # executar em qualquer branch
   push:
-    branches: [ main ]
+    branches: [ '*' ]  # Executa em todas as branches
   pull_request:
-    branches: [ main ]
+    branches: [ '*' ]  # Executa em PRs para todas as branches
   schedule:
     - cron: '0 0 * * 0'  # Executa semanalmente (domingo à meia-noite)
+
 
 jobs:
   dependency-check:
