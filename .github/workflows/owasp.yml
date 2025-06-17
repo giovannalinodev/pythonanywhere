@@ -21,26 +21,17 @@ jobs:
         with:
           python-version: '3.x'
       
-      - name: Create manual requirements file
-        run: |
-          # Criar arquivo de requisitos limpo manualmente
-          echo "Django>=4.2,<5.0" > clean-requirements.txt
-          echo "Pillow>=10.0.0" >> clean-requirements.txt
-          echo "dependency-check==0.5.0" >> clean-requirements.txt
-          echo "pylint==2.17.5" >> clean-requirements.txt
-          cat clean-requirements.txt
-      
-      - name: Install specific dependencies
+      - name: Install project dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r clean-requirements.txt
+          python -m pip install -r requirements.txt
           
       # Usar Safety para verificação de dependências
       - name: Install safety
         run: pip install safety
 
       - name: Run Safety Check
-        run: safety check --file clean-requirements.txt --output text > safety-report.txt
+        run: safety check --file requirements.txt --output text > safety-report.txt
         
       - name: Upload safety report
         uses: actions/upload-artifact@v4
@@ -81,7 +72,22 @@ jobs:
           path: pylint-report.txt
           retention-days: 7
 
-      # Detecção de código duplicado como step
-      - name: Detect duplicate code
+      # flake8-duplicate para detectar código duplicado
+      - name: Detect duplicate code with flake8-duplicate
         run: |
-          python detect_duplicates.py
+          # Criar configuração flake8 mínima se não existir
+          echo "[flake8]" > .flake8
+          echo "select = DUP" >> .flake8
+          echo "min-similarity-lines = 5" >> .flake8
+          echo "duplicate-threshold = 75" >> .flake8
+          
+          # Executar flake8 com o plugin de duplicação
+          flake8 --select=DUP mysite/ > duplicate-code-report.txt || exit 1
+          
+      - name: Upload duplicate code report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: duplicate-code-report
+          path: duplicate-code-report.txt
+          retention-days: 7
