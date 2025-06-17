@@ -22,6 +22,7 @@ class IndexView(View):
     def get (self, request, *args, **kwargs):
         return render(request, 'acervo/index.html')
 
+
 #### LISTAGEM DE LIVROS CADASTRADOS
 
 class LivroListView(View):
