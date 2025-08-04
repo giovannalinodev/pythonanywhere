@@ -287,3 +287,19 @@ def processar_dados_formulario(request, form_data):
             dados_processados[campo] = None
     
     return dados_processados
+
+def configurar_contexto_usuario(request, dados_extras=None):
+    """
+    Configura contexto padrão do usuário
+    Esta é uma duplicação intencional para teste
+    """
+    contexto = {
+        'user': request.user,
+        'is_authenticated': request.user.is_authenticated,
+        'user_id': request.user.id if request.user.is_authenticated else None,
+    }
+    
+    if dados_extras:
+        contexto.update(dados_extras)
+    
+    return contexto
