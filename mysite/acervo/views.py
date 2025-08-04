@@ -259,34 +259,31 @@ class RegistroEmprestimoView(LoginRequiredMixin, View):
         contexto = {'lista_emp': lista_emp, 'user': user, 'emprestimos_finalizados': emprestimos_finalizados}
         return render(request, 'acervo/registro_emprestimo.html', contexto)
 
-# ####TESTE EMPRESTIMO VIEW COM LEO
-# def registrar_emprestimo(request, livro_id):
-#     livro = get_object_or_404(Livro, pk=livro_id)
-#     contatos = Contato.objects.all()
+# Código duplicado para teste do detector
+def validar_usuario_acesso(request, required_permission=None):
+    """
+    Função para validar se o usuário tem acesso
+    Esta é uma duplicação intencional para teste
+    """
+    if not request.user.is_authenticated:
+        return False
+    
+    if required_permission and not request.user.has_perm(required_permission):
+        return False
+    
+    return True
 
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         contato = request.POST.get('contato')
-#         contato = Contato.objects.get(pk = contato)
-
-#         # Salvando o empréstimo diretamente no banco de dados
-#         emprestimo = Emprestimo.objects.create(livro=livro, contato=contato)
-
-#         if emprestimo:
-#             livro.livro_emprestado = True
-#             livro.save()
-
-#             messages.success(request, 'Empréstimo registrado com sucesso!')
-#             return redirect('acervo_pessoal:lista_livros_emprestados')
-#         else:
-#             messages.error(request, 'Erro ao registrar empréstimo.')
-#             return redirect('acervo:registrar_emprestimo.html')  # Substitua pelo nome correto da sua URL
-
-#     return render(request, 'acervo/registrar_emprestimo.html', {'livro': livro,'contatos': contatos})
-
-
-# def lista_livros_emprestados(request):
-#     livros_emprestados = Livro.objects.filter(livro_emprestado=True)
-#     total_livros_emprestados = livros_emprestados.count()
-
-#     return render(request, 'acervo_pessoal/lista_livros_emprestados.html', {'livros_emprestados': livros_emprestados, 'total_livros_emprestados': total_livros_emprestados})
+def processar_dados_formulario(request, form_data):
+    """
+    Processa dados do formulário com validação
+    Esta é uma duplicação intencional para teste
+    """
+    dados_processados = {}
+    
+    for campo, valor in form_data.items():
+        if valor and valor.strip():
+            dados_processados[campo] = valor.strip()
+        else:
+            dados_processados[campo] = None
+    
+    return dados_processados
