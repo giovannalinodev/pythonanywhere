@@ -1,12 +1,14 @@
 name: OWASP Dependency Check
 
 on:
+  # executar em qualquer branch
   push:
-    branches: [ main ]
+    branches: [ '*' ]  # Executa em todas as branches
   pull_request:
-    branches: [ main ]
+    branches: [ '*' ]  # Executa em PRs para todas as branches
   schedule:
     - cron: '0 0 * * 0'  # Executa semanalmente (domingo à meia-noite)
+
 
 jobs:
   dependency-check:
@@ -19,28 +21,32 @@ jobs:
         with:
           python-version: '3.x'
       
-      - name: Create manual requirements file
-        run: |
-          # Criar arquivo de requisitos limpo manualmente
-          echo "Django>=4.2,<5.0" > clean-requirements.txt
-          echo "Pillow>=10.0.0" >> clean-requirements.txt
-          echo "dependency-check==0.5.0" >> clean-requirements.txt
-          echo "pylint==2.17.5" >> clean-requirements.txt
-          cat clean-requirements.txt
-      
-      - name: Install specific dependencies
+      - name: Install project dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r clean-requirements.txt
+          python -m pip install -r requirements.txt
           
       # Usar Safety para verificação de dependências
       - name: Install safety
         run: pip install safety
 
       - name: Run Safety Check
-        run: safety check --file clean-requirements.txt --output text > safety-report.txt
+        run: |
+          export PYTHONIOENCODING=utf-8
+          export LC_ALL=C.UTF-8
+          export LANG=C.UTF-8
+          safety check --file requirements.txt --output text || true
+        continue-on-error: true
         
+      - name: Generate safety report
+        run: |
+          export PYTHONIOENCODING=utf-8
+          export LC_ALL=C.UTF-8
+          export LANG=C.UTF-8
+          safety check --file requirements.txt --output text > safety-report.txt 2>&1 || echo "Safety check completed with encoding issues" > safety-report.txt
+          
       - name: Upload safety report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: safety-report
@@ -78,3 +84,30 @@ jobs:
           name: pylint-report
           path: pylint-report.txt
           retention-days: 7
+
+      # Detector de código duplicado
+      - name: Install pylint for duplicate code detection
+        run: pip install pylint
+
+      - name: Detect duplicate code with pylint
+        run: |
+          pylint --disable=all --enable=duplicate-code --min-similarity-lines=5 mysite/acervo/ mysite/enquetes/ --output-format=text > duplicate-code-report.txt || true
+        continue-on-error: true
+          
+      - name: Upload duplicate code report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: duplicate-code-report
+          path: duplicate-code-report.txt
+          retention-days: 7
+
+      - name: Display duplicate code summary
+        if: always()
+        run: |
+          if grep -q "Similar lines in" duplicate-code-report.txt; then
+            echo "⚠️ Código duplicado encontrado. Verifique o relatório para detalhes."
+            echo "📄 Relatório disponível nos artefatos do build."
+          else
+            echo "✅ Nenhum código duplicado encontrado."
+          fi

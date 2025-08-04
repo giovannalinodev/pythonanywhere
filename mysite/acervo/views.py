@@ -22,6 +22,7 @@ class IndexView(View):
     def get (self, request, *args, **kwargs):
         return render(request, 'acervo/index.html')
 
+
 #### LISTAGEM DE LIVROS CADASTRADOS
 
 class LivroListView(View):
@@ -257,37 +258,3 @@ class RegistroEmprestimoView(LoginRequiredMixin, View):
         emprestimos_finalizados = lista_emp.exists()
         contexto = {'lista_emp': lista_emp, 'user': user, 'emprestimos_finalizados': emprestimos_finalizados}
         return render(request, 'acervo/registro_emprestimo.html', contexto)
-
-# ####TESTE EMPRESTIMO VIEW COM LEO
-# def registrar_emprestimo(request, livro_id):
-#     livro = get_object_or_404(Livro, pk=livro_id)
-#     contatos = Contato.objects.all()
-
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         contato = request.POST.get('contato')
-#         contato = Contato.objects.get(pk = contato)
-
-#         # Salvando o empréstimo diretamente no banco de dados
-#         emprestimo = Emprestimo.objects.create(livro=livro, contato=contato)
-
-#         if emprestimo:
-#             livro.livro_emprestado = True
-#             livro.save()
-
-#             messages.success(request, 'Empréstimo registrado com sucesso!')
-#             return redirect('acervo_pessoal:lista_livros_emprestados')
-#         else:
-#             messages.error(request, 'Erro ao registrar empréstimo.')
-#             return redirect('acervo:registrar_emprestimo.html')  # Substitua pelo nome correto da sua URL
-
-#     return render(request, 'acervo/registrar_emprestimo.html', {'livro': livro,'contatos': contatos})
-
-
-# def lista_livros_emprestados(request):
-#     livros_emprestados = Livro.objects.filter(livro_emprestado=True)
-#     total_livros_emprestados = livros_emprestados.count()
-
-#     return render(request, 'acervo_pessoal/lista_livros_emprestados.html', {'livros_emprestados': livros_emprestados, 'total_livros_emprestados': total_livros_emprestados})
-
-
