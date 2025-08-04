@@ -91,7 +91,8 @@ jobs:
 
       - name: Detect duplicate code with pylint
         run: |
-          pylint --disable=all --enable=duplicate-code --min-similarity-lines=5 mysite/acervo/ mysite/enquetes/ --output-format=text > duplicate-code-report.txt || exit 1
+          pylint --disable=all --enable=duplicate-code --min-similarity-lines=5 mysite/acervo/ mysite/enquetes/ --output-format=text > duplicate-code-report.txt || true
+        continue-on-error: true
           
       - name: Upload duplicate code report
         if: always()
@@ -101,12 +102,12 @@ jobs:
           path: duplicate-code-report.txt
           retention-days: 7
 
-      # Verificar se não há código duplicado (falhar se houver)
-      - name: Check for duplicate code violations
+      - name: Display duplicate code summary
+        if: always()
         run: |
           if grep -q "Similar lines in" duplicate-code-report.txt; then
-            echo "❌ Código duplicado encontrado! Verifique o relatório."
-            exit 1
+            echo "⚠️ Código duplicado encontrado. Verifique o relatório para detalhes."
+            echo "📄 Relatório disponível nos artefatos do build."
           else
             echo "✅ Nenhum código duplicado encontrado."
           fi

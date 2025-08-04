@@ -42,51 +42,6 @@ def resultado(request, pergunta_id):
 def sobre(request):
     return HttpResponse('&copy; DSWeb/TADS/CNAT/IFRN, 2023.')
 
-# CÓDIGO DUPLICADO INTENCIONAL PARA TESTE DO DETECTOR
-def validar_usuario_acesso(request, required_permission=None):
-    """
-    Função para validar se o usuário tem acesso
-    Esta é uma duplicação intencional para teste
-    """
-    if not request.user.is_authenticated:
-        return False
-    
-    if required_permission and not request.user.has_perm(required_permission):
-        return False
-    
-    return True
-
-def processar_dados_formulario(request, form_data):
-    """
-    Processa dados do formulário com validação
-    Esta é uma duplicação intencional para teste
-    """
-    dados_processados = {}
-    
-    for campo, valor in form_data.items():
-        if valor and valor.strip():
-            dados_processados[campo] = valor.strip()
-        else:
-            dados_processados[campo] = None
-    
-    return dados_processados
-
-def configurar_contexto_usuario(request, dados_extras=None):
-    """
-    Configura contexto padrão do usuário
-    Esta é uma duplicação intencional para teste
-    """
-    contexto = {
-        'user': request.user,
-        'is_authenticated': request.user.is_authenticated,
-        'user_id': request.user.id if request.user.is_authenticated else None,
-    }
-    
-    if dados_extras:
-        contexto.update(dados_extras)
-    
-    return contexto
-
 """
 1ª versão da visão de index
 def index(request):
