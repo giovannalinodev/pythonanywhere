@@ -21,10 +21,39 @@ jobs:
         with:
           python-version: '3.x'
       
+      # Instalar dependências do sistema para diagramas UML
+      - name: Install system dependencies for UML diagrams
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz graphviz-dev pkg-config
+      
       - name: Install project dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+          
+      # Gerar diagrama UML das classes de domínio diretamente
+      - name: Generate UML Class Diagram
+        run: |
+          cd mysite
+          python manage.py graph_models acervo enquetes \
+            --output=../domain_class_diagram.png \
+            --exclude-models=User \
+            --group-models \
+            --arrow-shape=normal \
+            --layout=dot \
+            --rankdir=TB \
+            --theme=original
+          echo "✅ Diagrama UML das classes de domínio gerado com sucesso!"
+        continue-on-error: true
+        
+      - name: Upload UML diagram
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uml-class-diagram
+          path: domain_class_diagram.png
+          retention-days: 30
           
       # Usar Safety para verificação de dependências
       - name: Install safety
@@ -110,4 +139,20 @@ jobs:
             echo "📄 Relatório disponível nos artefatos do build."
           else
             echo "✅ Nenhum código duplicado encontrado."
+          fi
+          
+      # Exibir resumo do diagrama UML gerado
+      - name: Display UML diagram summary
+        if: always()
+        run: |
+          if [ -f "domain_class_diagram.png" ]; then
+            echo "🎨 ✅ Diagrama UML das classes de domínio gerado com sucesso!"
+            echo "📊 Arquivo disponível nos artefatos: domain_class_diagram.png"
+            echo "📏 Tamanho do arquivo: $(du -h domain_class_diagram.png | cut -f1)"
+            ls -la domain_class_diagram.png
+          else
+            echo "⚠️ Diagrama UML não foi gerado. Verifique se:"
+            echo "   - As dependências do Graphviz estão instaladas"
+            echo "   - O django-extensions está configurado"
+            echo "   - Os modelos existem nos apps acervo e enquetes"
           fi
