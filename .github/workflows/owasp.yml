@@ -30,7 +30,8 @@ jobs:
       - name: Install project dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-base.txt
+          python -m pip install -r requirements-uml.txt
           
       # Gerar diagrama UML das classes de domínio diretamente
       - name: Generate UML Class Diagram
@@ -64,7 +65,7 @@ jobs:
           export PYTHONIOENCODING=utf-8
           export LC_ALL=C.UTF-8
           export LANG=C.UTF-8
-          safety check --file requirements.txt --output text || true
+          safety check --file requirements-base.txt --output text || true
         continue-on-error: true
         
       - name: Generate safety report
@@ -72,7 +73,7 @@ jobs:
           export PYTHONIOENCODING=utf-8
           export LC_ALL=C.UTF-8
           export LANG=C.UTF-8
-          safety check --file requirements.txt --output text > safety-report.txt 2>&1 || echo "Safety check completed with encoding issues" > safety-report.txt
+          safety check --file requirements-base.txt --output text > safety-report.txt 2>&1 || echo "Safety check completed with encoding issues" > safety-report.txt
           
       - name: Upload safety report
         if: always()
