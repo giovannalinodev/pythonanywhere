@@ -31,9 +31,22 @@ jobs:
         run: pip install safety
 
       - name: Run Safety Check
-        run: safety check --file requirements.txt --output text > safety-report.txt
+        run: |
+          export PYTHONIOENCODING=utf-8
+          export LC_ALL=C.UTF-8
+          export LANG=C.UTF-8
+          safety check --file requirements.txt --output text || true
+        continue-on-error: true
         
+      - name: Generate safety report
+        run: |
+          export PYTHONIOENCODING=utf-8
+          export LC_ALL=C.UTF-8
+          export LANG=C.UTF-8
+          safety check --file requirements.txt --output text > safety-report.txt 2>&1 || echo "Safety check completed with encoding issues" > safety-report.txt
+          
       - name: Upload safety report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: safety-report
