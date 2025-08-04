@@ -72,7 +72,28 @@ jobs:
           path: pylint-report.txt
           retention-days: 7
 
-            # Detectar código duplicado com pylint
+      # Detector de código duplicado
+      - name: Install pylint for duplicate code detection
+        run: pip install pylint
+
       - name: Detect duplicate code with pylint
         run: |
-          pylint --disable=all --enable=duplicate-code --min-similarity-lines=5 mysite/ > duplicate-code-report.txt || exit 1
+          pylint --disable=all --enable=duplicate-code --min-similarity-lines=5 mysite/acervo/ mysite/enquetes/ --output-format=text > duplicate-code-report.txt || exit 1
+          
+      - name: Upload duplicate code report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: duplicate-code-report
+          path: duplicate-code-report.txt
+          retention-days: 7
+
+      # Verificar se não há código duplicado (falhar se houver)
+      - name: Check for duplicate code violations
+        run: |
+          if grep -q "Similar lines in" duplicate-code-report.txt; then
+            echo "❌ Código duplicado encontrado! Verifique o relatório."
+            exit 1
+          else
+            echo "✅ Nenhum código duplicado encontrado."
+          fi
