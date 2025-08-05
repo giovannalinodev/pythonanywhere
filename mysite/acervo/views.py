@@ -14,6 +14,7 @@ from django.db import transaction
 from .models import Livro, Contato, Emprestimo, Item
 from django.contrib.auth.models import User
 
+HOME_URL = 'acervo:home'
 
 ####INDEX
 
