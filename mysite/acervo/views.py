@@ -14,6 +14,7 @@ from django.db import transaction
 from .models import Livro, Contato, Emprestimo, Item
 from django.contrib.auth.models import User
 
+HOME_URL = 'acervo:home'
 
 ####INDEX
 
@@ -53,7 +54,7 @@ class NovoLivroView(View):
             user = request.user
         )
         livro.save()
-        return redirect('acervo:home')
+        return redirect(HOME_URL)
 
 #####LOGIN E LOGOUT
 
@@ -69,7 +70,7 @@ class LoginView(View):
 
         if user is not None:
             login(request, user)
-            return redirect('acervo:home')
+            return redirect('HOME_URL')
         else:
             contexto = {'erro': 'Usuário ou senha inválidos!'}
             return render(request, 'acervo/login.html', contexto)
@@ -155,7 +156,7 @@ class SaveItemView(View):
             user = request.user
         )
         item.save()
-        return redirect('acervo:home')
+        return redirect('HOME_URL')
 
 #####VIEW CADASTRO CONTATO
 
@@ -174,7 +175,7 @@ class SaveContatoView(View):
             user = request.user
         )
         contato.save()
-        return redirect('acervo:home')
+        return redirect('HOME_URL')
         #continuar com base no que o professor fez ainda
 
 
@@ -230,7 +231,7 @@ class EmprestimoView(LoginRequiredMixin, View):
             if livro:
                 livro.save()
 
-        return redirect('acervo:home')
+        return redirect('HOME_URL')
 
 class EmprestimoFinalizarView(View):
     def get(self, request, *args, **kwargs):
@@ -249,7 +250,7 @@ class EmprestimoFinalizarView(View):
 
         emp.save()
 
-        return redirect('acervo:home')
+        return redirect('HOME_URL')
 
 class RegistroEmprestimoView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):

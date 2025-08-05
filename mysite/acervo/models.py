@@ -1,6 +1,5 @@
 from django.db import models
 from datetime import date
-# from django.utils import timezone
 from django.contrib.auth.models import User
 
 class Item(models.Model):
@@ -31,19 +30,6 @@ class Contato(models.Model):
 
     def __str__(self):
         return self.nome_cont
-
-# class Emprestimo(models.Model):
-#     data_emprestimo = models.DateField(auto_now_add=True)
-#     item = models.ForeignKey(Item, on_delete = models.CASCADE, null = True, blank = True)
-#     livro = models.ForeignKey(Livro, on_delete = models.CASCADE, null = True, blank = True)
-#     contato = models.ForeignKey(Contato, on_delete = models.CASCADE)
-#     user = models.ForeignKey(User, on_delete = models.CASCADE, default = None)
-
-#     def __str__(self):
-#         if self.item:
-#             return f"{self.item.nome}"
-#         else:
-#             return f"{self.livro.titulo}"
 
 
 class Emprestimo(models.Model):
