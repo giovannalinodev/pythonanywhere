@@ -50,7 +50,7 @@ jobs:
         
       - name: Upload UML diagram
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: uml-class-diagram
           path: domain_class_diagram.png
@@ -77,7 +77,7 @@ jobs:
           
       - name: Upload safety report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: safety-report
           path: safety-report.txt
@@ -97,7 +97,7 @@ jobs:
           
       - name: Upload deprecated code report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: deprecated-code-report
           path: deprecated-code-report.txt
@@ -109,7 +109,7 @@ jobs:
           pylint mysite/acervo/ --output=pylint-report.txt || true
           
       - name: Upload pylint report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: pylint-report
           path: pylint-report.txt
@@ -126,7 +126,7 @@ jobs:
           
       - name: Upload duplicate code report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: duplicate-code-report
           path: duplicate-code-report.txt
